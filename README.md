@@ -1,0 +1,2 @@
+# FinanceGPT
+Repo for both Frontend &amp; Backend enabling an AI enabled personal accountant. This personal finance dashboard &amp; chat uses Plaid API requests&amp; Firebase Auth, Collections to aggregate account info across multiple accounts. Designed for personal use and storage. Insights provided by GPT4.
