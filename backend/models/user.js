@@ -28,6 +28,7 @@ const userSchema = new mongoose.Schema({
 	salary: { type: Number },
 	payday: { type: Number },
 	openAiKey: String,
+	mongoDBURL: String,
 
 	// Information regarding the current selected plaid API
 	ACCESS_TOKEN: String,

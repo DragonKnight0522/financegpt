@@ -3,30 +3,13 @@
 import { useEffect, useState, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getPaymentTransaction } from "@/store/actions/useTransaction";
-import {
-	CurrencyDollarIcon,
-	InformationCircleIcon,
-	SearchIcon,
-} from "@heroicons/react/solid";
+import { InformationCircleIcon } from "@heroicons/react/solid";
 import Datepicker from "react-tailwindcss-datepicker";
 import {
 	Card,
-	Grid,
-	Col,
 	Title,
 	Text,
-	Tab,
-	TabList,
-	TabGroup,
-	TabPanel,
-	TabPanels,
-	BadgeDelta,
-	DeltaType,
 	Flex,
-	Metric,
-	ProgressBar,
-	AreaChart,
-	Color,
 	Icon,
 	MultiSelect,
 	MultiSelectItem,
@@ -38,29 +21,18 @@ import {
 	TableHead,
 	TableHeaderCell,
 	TableRow,
-	Button,
 	Badge,
-	DateRangePicker,
-	DateRangePickerItem,
-	DatePicker,
-	TextInput,
 	NumberInput,
 } from "@tremor/react";
 import { dateFormat, handleError, isEmpty } from "@/utils/util";
-import { es } from "date-fns/locale";
 import { getAllCategories } from "@/store/actions/usePlaid";
 import SearchInput from "@/components/Basic/SearchInput";
 import Pagination from "@/components/Basic/Pagination";
 
 export default function Dashboard() {
 	const dispatch = useDispatch();
-	const {
-		isItemAccess,
-		isTransactionsLoaded,
-		transactionsInfo,
-		categories,
-		accounts,
-	} = useSelector((state) => state.plaid);
+	const { isItemAccess, isTransactionsLoaded, transactionsInfo, categories } =
+		useSelector((state) => state.plaid);
 	const { data: transactions, size: total } = useSelector(
 		(state) => state.transactions
 	);
@@ -75,7 +47,7 @@ export default function Dashboard() {
 		),
 		endDate: dateFormat(new Date()),
 	});
-	
+
 	const [priceRange, setPriceRange] = useState({
 		minPrice: "",
 		maxPrice: "",
@@ -116,7 +88,6 @@ export default function Dashboard() {
 
 	useEffect(() => {
 		fetchData();
-		console.log("fetched transaction");
 	}, [
 		dispatch,
 		selectedCategories,
@@ -136,7 +107,7 @@ export default function Dashboard() {
 	return (
 		<main className="min-h-screen">
 			<Text className="mt-6">
-				A bird's eye view of your financial positions.
+				{"A bird's eye view of your financial positions."}
 			</Text>
 			<Card className="mt-6">
 				<>
@@ -163,7 +134,11 @@ export default function Dashboard() {
 							{categories?.map((item) => (
 								<MultiSelectItem
 									key={item.category_id}
-									value={item.hierarchy[item.hierarchy.length - 1]}
+									value={
+										item.hierarchy[
+											item.hierarchy.length - 1
+										]
+									}
 								>
 									{item.hierarchy[item.hierarchy.length - 1]}
 								</MultiSelectItem>
@@ -281,8 +256,8 @@ export default function Dashboard() {
 						</TableHead>
 
 						<TableBody>
-							{transactions.map((item) => (
-								<TableRow key={item.transaction_id}>
+							{transactions.map((item, index) => (
+								<TableRow key={"transaction_" + index}>
 									<TableCell>{item.name}</TableCell>
 									<TableCell className="text-right">
 										{item.amount} ({item.iso_currency_code})

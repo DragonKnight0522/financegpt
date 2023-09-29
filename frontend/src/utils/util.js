@@ -1,4 +1,5 @@
 import { signOut } from "next-auth/react";
+import toast from "react-hot-toast";
 
 export const isEmpty = (value) =>
 	value === undefined ||
@@ -7,8 +8,15 @@ export const isEmpty = (value) =>
 	(typeof value === "string" && value.trim().length === 0);
 
 export const handleError = (err) => {
-	signOut();
-	console.error(err);
+	if (err.response) {
+		if (err.response.status === 401) {
+			signOut();
+		} else if (err.response.status == 403) {
+			toast.error(err.response.data.message || err.response.data);
+		}
+	} else {
+		toast.error(err.message);
+	}
 };
 
 export const dateFormat = (value) => {

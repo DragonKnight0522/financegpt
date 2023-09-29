@@ -1,11 +1,17 @@
 const mongoose = require("mongoose");
 const ObjectId = mongoose.Types.ObjectId;
 const { handleError, isEmpty } = require("../utils/util");
-const Chat = require("../models/chat");
+const { getConnection } = require("../config/mongodb");
 
 exports.getChatInfo = async (req, res, next) => {
 	try {
 		const { user } = req;
+		const { Chat } = getConnection(user._id);
+		if (isEmpty(Chat))
+			return res
+				.status(403)
+				.json({ message: "Personal Database Connection Error" });
+
 		let chatHistory = await Chat.find({ user: user._id });
 		return res.send({ chatHistory });
 	} catch (error) {
@@ -17,6 +23,11 @@ exports.getAIMessage = async (req, res, next) => {
 	try {
 		const { user } = req;
 		const { message, _id, title } = req.body;
+		const { Chat } = getConnection(user._id);
+		if (isEmpty(Chat))
+			return res
+				.status(403)
+				.json({ message: "Personal Database Connection Error" });
 
 		let chatChannel;
 		if (isEmpty(_id)) {
@@ -49,6 +60,12 @@ exports.deleteChatChannel = async (req, res, next) => {
 	try {
 		const { user } = req;
 		const { id } = req.params;
+		const { Chat } = getConnection(user._id);
+		if (isEmpty(Chat))
+			return res
+				.status(403)
+				.json({ message: "Personal Database Connection Error" });
+
 		if (id == "all")
 			await Chat.deleteMany({ user: new ObjectId(user._id) });
 		else await Chat.findByIdAndDelete(id);
@@ -62,6 +79,12 @@ exports.updateChatChannelTitle = async (req, res, next) => {
 	try {
 		const { user } = req;
 		const { _id, title } = req.body;
+		const { Chat } = getConnection(user._id);
+		if (isEmpty(Chat))
+			return res
+				.status(403)
+				.json({ message: "Personal Database Connection Error" });
+
 		await Chat.findByIdAndUpdate(_id, { title });
 		res.json("success");
 	} catch (error) {

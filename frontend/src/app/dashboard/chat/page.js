@@ -39,7 +39,7 @@ export default function Chat() {
 
 	useEffect(() => {
 		fetchData();
-	}, []);
+	}, [fetchData]);
 
 	const handleEnter = async (e) => {
 		var keycode = e.keyCode ? e.keyCode : e.which;

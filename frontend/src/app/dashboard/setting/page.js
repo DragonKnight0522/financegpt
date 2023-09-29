@@ -52,13 +52,13 @@ export default function Setting() {
 
 	useGetAccounts();
 
-	// const fetchData = useCallback(() => {
-	// 	dispatch(getUserInfo());
-	// }, [dispatch]);
+	const fetchData = useCallback(() => {
+		dispatch(getUserInfo());
+	}, [dispatch]);
 
-	// useEffect(() => {
-	// 	fetchData();
-	// }, []);
+	useEffect(() => {
+		fetchData();
+	}, []);
 
 	useEffect(() => {
 		setUserInfo(user);
@@ -96,7 +96,7 @@ export default function Setting() {
 	return (
 		<main className="min-h-screen">
 			<Text className="mt-6">
-				A bird's eye view of your financial positions.
+				{"A bird's eye view of your financial positions."}
 			</Text>
 			<Grid numItemsLg={2} className="gap-6 mt-6">
 				<Card>
@@ -204,22 +204,32 @@ export default function Setting() {
 					<Metric className="truncate">Upgrade</Metric>
 					<Flex className="mt-4 space-x-2">
 						<Text className="w-1/3 truncate">OpenAI Key</Text>
-						<Flex>
-							<TextInput
-								value={userInfo?.openAiKey ?? ""}
-								onChange={(e) =>
-									setUserInfo({
-										...userInfo,
-										openAiKey: e.target.value,
-									})
-								}
-							/>
-							<Button onClick={handleUpdateUserInfo}>Save</Button>
-						</Flex>
+						<TextInput
+							value={userInfo?.openAiKey ?? ""}
+							onChange={(e) =>
+								setUserInfo({
+									...userInfo,
+									openAiKey: e.target.value,
+								})
+							}
+						/>
+					</Flex>
+					<Flex className="mt-4 space-x-2">
+						<Text className="w-1/3 truncate">Database Key</Text>
+						<TextInput
+							value={userInfo?.mongoDBURL ?? ""}
+							onChange={(e) =>
+								setUserInfo({
+									...userInfo,
+									mongoDBURL: e.target.value,
+								})
+							}
+						/>
 					</Flex>
 					<Flex className="mt-4 space-x-2">
 						<div className="w-1/3 truncate" />
 						<Flex>
+							<Button onClick={handleUpdateUserInfo}>Save</Button>
 							<Button onClick={handleUpdatePro}>
 								Update to Pro
 							</Button>

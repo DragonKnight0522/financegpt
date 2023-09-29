@@ -1,5 +1,5 @@
-const { isEmpty } = require("../utils/util");
-const Transaction = require("../models/transaction");
+const { getConnection } = require("../config/mongodb");
+const { isEmpty, handleError } = require("../utils/util");
 
 // get Transactions with filter and sort
 exports.getTransaction = async (req, res, next) => {
@@ -17,6 +17,11 @@ exports.getTransaction = async (req, res, next) => {
 			},
 		} = req.body;
 		const user = req.user;
+		const { Transaction } = getConnection(user._id);
+		if (isEmpty(Transaction))
+			return res
+				.status(403)
+				.json({ message: "Personal Database Connection Error" });
 
 		let query = { user: user._id };
 
@@ -35,7 +40,10 @@ exports.getTransaction = async (req, res, next) => {
 		}
 
 		if (merchantName !== "") {
-			query.merchant_name = { $regex: new RegExp(merchantName), $options: 'i' };
+			query.merchant_name = {
+				$regex: new RegExp(merchantName),
+				$options: "i",
+			};
 		}
 
 		if (selectedPaymentChannel != "all") {
@@ -58,6 +66,6 @@ exports.getTransaction = async (req, res, next) => {
 
 		res.send({ size: totalFilteredData, data });
 	} catch (error) {
-		res.status(400).send(error.message);
+		handleError(error);
 	}
 };

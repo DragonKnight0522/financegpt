@@ -8,8 +8,13 @@ const {
 	calculateNetWorth,
 	calculateCreditUtilization,
 } = require("../utils/util");
-const Transaction = require("../models/transaction");
+
 const { getLiabilitiesByToken } = require("./plaid");
+const {
+	createConnection,
+	getConnection,
+	checkConnection,
+} = require("../config/mongodb");
 
 exports.getUserInfo = async (req, res, next) => {
 	try {
@@ -33,6 +38,11 @@ exports.deleteItemInfoById = async (req, res, next) => {
 	try {
 		const { user } = req;
 		const { id } = req.params;
+		const { Transaction } = getConnection(user._id);
+		if (isEmpty(Transaction))
+			return res
+				.status(403)
+				.json({ message: "Personal Database Connection Error" });
 
 		const item = await Item.findByIdAndDelete(id);
 
@@ -64,6 +74,24 @@ exports.updateUserAccount = async (req, res, next) => {
 		const { user } = req;
 		const { userInfo } = req.body;
 		await User.findByIdAndUpdate(user._id, { ...userInfo });
+
+		// Create database connection.
+		if (
+			(!isEmpty(userInfo.mongoDBURL) && !checkConnection(user._id)) ||
+			userInfo.mongoDBURL !== user.mongoDBURL
+		) {
+			const conRes = await createConnection(
+				user._id,
+				userInfo.mongoDBURL
+			);
+			if (conRes !== 1) {
+				console.log(conRes);
+				return res.status(403).send({
+					message: "Personal database connection error.",
+				});
+			}
+		}
+
 		res.send("User account updated successfully");
 	} catch (error) {
 		handleError(error);
@@ -76,6 +104,10 @@ exports.handleGetDashboard = async (req, res, next) => {
 		const {
 			filterDate: { filterDate },
 		} = req.body;
+
+		const { Transaction } = getConnection(user._id);
+		if (isEmpty(Transaction))
+			return res.status(403).json("Personal Database Connection Error");
 
 		const start_date = new Date(filterDate.startDate);
 		const end_date = new Date(filterDate.endDate);

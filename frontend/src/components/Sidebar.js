@@ -59,7 +59,7 @@ const Sidebar = ({
 		<div
 			className={`${collapsed ? "w-16" : "w-[300px]"} ${
 				shown ? "" : "-translate-x-full"
-			} bg-gray-700 text-zinc-50 h-screen md:translate-x-0 z-20 transition-all duration-300 ease-in-out sticky top-0`}
+			} bg-gray-700 text-zinc-50 h-screen md:translate-x-0 transition-all duration-300 ease-in-out sticky top-0`}
 		>
 			<div className="inset-0 flex flex-col justify-between h-screen md:h-full">
 				<div

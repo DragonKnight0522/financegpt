@@ -7,8 +7,9 @@ import axios from "axios";
 // import GitHubProvider from "next-auth/providers/github";
 import GoogleProvider from "next-auth/providers/google";
 import apiCall from "@/utils/apiCall";
+import { useNavigation } from "next/navigation";
 
-export const authOptions = {
+const authOptions = {
 	pages: {
 		signIn: "/",
 	},
@@ -26,10 +27,11 @@ export const authOptions = {
 		async signIn({ account, profile, user }) {
 			if (account.provider === "google") {
 				try {
-					await apiCall.post(
+					const res = await apiCall.post(
 						`${process.env.NEXT_APP_API_HOST}/api/auth/signin`,
 						profile
 					);
+					user.isNewUser = res.data?.isNewUser;
 				} catch (err) {
 					console.log(err);
 				}
@@ -37,13 +39,16 @@ export const authOptions = {
 			}
 			return false;
 		},
-		async jwt({ token, user, account }) {
+		async jwt({ token, user, account, trigger, session }) {
 			if (user) {
 				token = { user, accessToken: account.id_token };
 			}
+			if (trigger === "update") {
+				token.user.isNewUser = session.isNewUser;
+			}
 			return token;
 		},
-		async session({ session, token }) {
+		async session({ session, token, req }) {
 			session.accessToken = token.accessToken;
 			session = { ...session, ...token };
 			return session;

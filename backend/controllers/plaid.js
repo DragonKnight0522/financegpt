@@ -12,8 +12,8 @@ const { prettyPrintResponse, handleError, isEmpty } = require("../utils/util");
 const { PLAID_PRODUCTS, PLAID_COUNTRY_CODES } = require("../config/plaid");
 const User = require("../models/user");
 const Item = require("../models/item");
-const Transaction = require("../models/transaction");
 const mongoose = require("mongoose");
+const { getConnection } = require("../config/mongodb");
 const ObjectId = mongoose.Types.ObjectId;
 
 const PLAID_CLIENT_ID = process.env.PLAID_CLIENT_ID;
@@ -200,6 +200,11 @@ exports.auth = (request, response, next) => {
 exports.transactions = async (request, response, next) => {
 	try {
 		const { user } = request;
+		const { Transaction } = getConnection(user._id);
+		if (isEmpty(Transaction))
+			return response
+				.status(403)
+				.json({ message: "Personal Database Connection Error" });
 
 		// get
 		const item = await Item.findOne({
