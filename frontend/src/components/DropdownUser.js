@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 
 import { useSession, signOut } from "next-auth/react";
+import ConnectButton from "./ConnectButton";
+import { LinkIcon } from "@heroicons/react/solid";
 
 const DropdownUser = () => {
 	const { data } = useSession();
@@ -52,11 +54,13 @@ const DropdownUser = () => {
 				</span>
 
 				<span className="w-12 h-12">
-					{data?.user?.image && <img
-						className="rounded-full"
-						src={data?.user?.image}
-						alt="User"
-					/>}
+					{data?.user?.image && (
+						<img
+							className="rounded-full"
+							src={data?.user?.image}
+							alt="User"
+						/>
+					)}
 				</span>
 
 				<svg
@@ -88,7 +92,13 @@ const DropdownUser = () => {
 				}`}
 			>
 				<ul className="flex flex-col gap-5 py-5 border-b px-7 border-stroke">
-					<li>
+					<li onClick={() => setDropdownOpen(false)}>
+						<ConnectButton>
+							<LinkIcon className="w-[22px]" />
+							Connect
+						</ConnectButton>
+					</li>
+					<li onClick={() => setDropdownOpen(false)}>
 						<Link
 							href="/dashboard/setting"
 							className="flex items-center gap-3.5 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base"
@@ -114,7 +124,10 @@ const DropdownUser = () => {
 						</Link>
 					</li>
 				</ul>
-				<button className="flex items-center gap-3.5 px-7 py-5 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base" onClick={ signOut }>
+				<button
+					className="flex items-center gap-3.5 px-7 py-5 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base"
+					onClick={signOut}
+				>
 					<svg
 						className="fill-current"
 						width="22"

@@ -6,7 +6,7 @@ const { getConnection } = require("../config/mongodb");
 exports.getChatInfo = async (req, res, next) => {
 	try {
 		const { user } = req;
-		const { Chat } = getConnection(user._id);
+		const { Chat } = await getConnection(user._id, user.mongoDBURL);
 		if (isEmpty(Chat))
 			return res
 				.status(403)
@@ -23,7 +23,7 @@ exports.getAIMessage = async (req, res, next) => {
 	try {
 		const { user } = req;
 		const { message, _id, title } = req.body;
-		const { Chat } = getConnection(user._id);
+		const { Chat } = await getConnection(user._id, user.mongoDBURL);
 		if (isEmpty(Chat))
 			return res
 				.status(403)
@@ -60,7 +60,7 @@ exports.deleteChatChannel = async (req, res, next) => {
 	try {
 		const { user } = req;
 		const { id } = req.params;
-		const { Chat } = getConnection(user._id);
+		const { Chat } = await getConnection(user._id, user.mongoDBURL);
 		if (isEmpty(Chat))
 			return res
 				.status(403)
@@ -79,7 +79,7 @@ exports.updateChatChannelTitle = async (req, res, next) => {
 	try {
 		const { user } = req;
 		const { _id, title } = req.body;
-		const { Chat } = getConnection(user._id);
+		const { Chat } = await getConnection(user._id, user.mongoDBURL);
 		if (isEmpty(Chat))
 			return res
 				.status(403)

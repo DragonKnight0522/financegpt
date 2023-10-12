@@ -1,3 +1,5 @@
+"use client";
+
 import { useEffect, useContext, useCallback } from "react";
 import { usePlaidLink } from "react-plaid-link";
 
@@ -62,14 +64,13 @@ const ConnectButton = ({ children }) => {
 	};
 
 	return (
-		<Button
-			type="button"
-			size="lg"
+		<button
+			className="flex items-center gap-3.5 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base"
 			onClick={handleOpenPlaidLink}
 			disabled={!ready || !linkSuccess}
 		>
 			{children}
-		</Button>
+		</button>
 	);
 };
 

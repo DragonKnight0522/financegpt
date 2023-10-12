@@ -29,7 +29,7 @@ exports.signin = async (req, res) => {
 			{
 				new: true,
 				upsert: true,
-				rawResult: true,
+				includeResultMetadata: true,
 			}
 		);
 
@@ -40,11 +40,11 @@ exports.signin = async (req, res) => {
 			res.status(500).json({ error: "Error in creating/updating user" });
 		} else {
 			user = userInfo.value;
-			isNewUser = userInfo.lastErrorObject.upserted ? true : false;
+			isNewUser = userInfo.lastErrorObject.updatedExisting ? false : true;
 
 			// Check DB Connection
-			if (!isEmpty(userInfo.mongoDBURL) && !checkConnection(user._id)) {
-				const res = await createConnection(user._id, userInfo.mongoDBURL);
+			if (!isEmpty(user.mongoDBURL) && !checkConnection(user._id)) {
+				const res = await createConnection(user._id, user.mongoDBURL);
 				if (res !== 1)
 					return res.json({
 						message: "Personal database connection error.",

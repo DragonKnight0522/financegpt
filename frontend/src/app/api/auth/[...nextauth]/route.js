@@ -1,13 +1,6 @@
-// import { prisma } from "@/lib/prisma";
-// import { compare } from "bcryptjs";
 import NextAuth from "next-auth";
-import axios from "axios";
-
-// import CredentialsProvider from "next-auth/providers/credentials";
-// import GitHubProvider from "next-auth/providers/github";
 import GoogleProvider from "next-auth/providers/google";
 import apiCall from "@/utils/apiCall";
-import { useNavigation } from "next/navigation";
 
 const authOptions = {
 	pages: {
@@ -39,9 +32,10 @@ const authOptions = {
 			}
 			return false;
 		},
-		async jwt({ token, user, account, trigger, session }) {
+		async jwt({ token, user, account, trigger, session, profile }) {
 			if (user) {
 				token = { user, accessToken: account.id_token };
+				token.id = user.id;
 			}
 			if (trigger === "update") {
 				token.user.isNewUser = session.isNewUser;

@@ -13,7 +13,7 @@ import {
 } from "@heroicons/react/solid";
 import { usePathname } from "next/navigation";
 
-export const defaultNavItems = [
+const defaultNavItems = [
 	{
 		label: "Dashboard",
 		href: "/dashboard",

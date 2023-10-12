@@ -200,7 +200,7 @@ exports.auth = (request, response, next) => {
 exports.transactions = async (request, response, next) => {
 	try {
 		const { user } = request;
-		const { Transaction } = getConnection(user._id);
+		const { Transaction } = await getConnection(user._id, user.mongoDBURL);
 		if (isEmpty(Transaction))
 			return response
 				.status(403)

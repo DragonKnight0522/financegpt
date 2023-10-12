@@ -104,8 +104,10 @@ export default function Dashboard() {
 	};
 
 	return (
-		<main className="min-h-screen">
-			<Text>{"A bird's eye view of your financial positions."}</Text>
+		<main className="min-h-screen p-4 m-auto max-w-7xl">
+			<Text className="mt-6 mb-2">
+				{"A bird's eye view of your financial positions."}
+			</Text>
 			<Grid numItemsSm={2} numItemsLg={4} className="gap-6">
 				{kpis?.map((item, index) => (
 					<Card key={index}>

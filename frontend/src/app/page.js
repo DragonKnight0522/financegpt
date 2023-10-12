@@ -61,7 +61,7 @@ const LoginForm = () => {
 								onClick={() =>
 									signIn("google", { callbackUrl })
 								}
-								className="flex items-center justify-center w-full gap-2 px-4 py-2 transition duration-150 border rounded-lg border-slate-200 text-slate-700 hover:border-slate-400 hover:text-slate-900 hover:shadow"
+								className="flex items-center justify-center w-full gap-2 px-4 py-2 transition duration-150 border rounded-lg border-slate-200 text-slate-700 hover:border-slate-400 hover:text-slate-900 hover:shadow dark:text-white"
 							>
 								<img
 									className={`${

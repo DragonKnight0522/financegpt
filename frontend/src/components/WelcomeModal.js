@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState, useRef, useEffect } from "react";
 import { Transition } from "@headlessui/react";
 import { useSession } from "next-auth/react";

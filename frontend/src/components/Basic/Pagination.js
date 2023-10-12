@@ -19,7 +19,7 @@ const Pagination = ({
 	);
 
 	return (
-		<div className="flex items-center justify-between ml-2">
+		<div className="flex items-center justify-between mt-2 ml-0 md:ml-2 md:mt-0">
 			<div>
 				<Select
 					className="min-w-[5rem] text-center"

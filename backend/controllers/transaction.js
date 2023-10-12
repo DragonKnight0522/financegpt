@@ -17,7 +17,7 @@ exports.getTransaction = async (req, res, next) => {
 			},
 		} = req.body;
 		const user = req.user;
-		const { Transaction } = getConnection(user._id);
+		const { Transaction } = await getConnection(user._id, user.mongoDBURL);
 		if (isEmpty(Transaction))
 			return res
 				.status(403)

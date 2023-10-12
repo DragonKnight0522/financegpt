@@ -1,23 +1,30 @@
-import { toggleTheme } from "@/store/actions/useTheme";
-import { useDispatch, useSelector } from "react-redux";
+"use client";
+
+import * as React from "react";
+import { useTheme } from "next-themes";
+import { isEmpty } from "@/utils/util";
 
 const DarkModeSwitcher = () => {
-	const { theme } = useSelector((state) => state.theme);
-	const dispatch = useDispatch();
+	const { setTheme, theme } = useTheme();
+	const [_, startTransition] = React.useTransition();
 
 	return (
 		<li>
-			<label
-				className={`relative m-0 block h-[1.875rem] w-14 rounded-full bg-gray-200 dark:bg-tremor-dark-background`}
-			>
+			<label className="relative m-0 block h-[1.875rem] w-14 rounded-full bg-gray-200 dark:bg-tremor-dark-background">
 				<input
 					type="checkbox"
-					onChange={() => dispatch(toggleTheme)}
+					onChange={() => {
+						startTransition(() => {
+							setTheme(theme === "light" ? "dark" : "light");
+						});
+					}}
 					className="absolute top-0 z-50 w-full h-full m-0 opacity-0 cursor-pointer dur"
 				/>
 				<span
 					className={`absolute top-1/2 left-[3px] flex h-[1.5rem] w-6 -translate-y-1/2 translate-x-0 items-center justify-center rounded-full bg-white shadow-switcher duration-75 ease-linear ${
-						theme === "dark" && "!right-[3px] !translate-x-full"
+						isEmpty(theme) || theme === "dark"
+							? ""
+							: "!right-[3px] !translate-x-full"
 					}`}
 				>
 					<span className="dark:hidden">

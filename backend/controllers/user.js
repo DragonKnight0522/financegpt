@@ -38,7 +38,7 @@ exports.deleteItemInfoById = async (req, res, next) => {
 	try {
 		const { user } = req;
 		const { id } = req.params;
-		const { Transaction } = getConnection(user._id);
+		const { Transaction } = await getConnection(user._id, user.mongoDBURL);
 		if (isEmpty(Transaction))
 			return res
 				.status(403)
@@ -46,7 +46,7 @@ exports.deleteItemInfoById = async (req, res, next) => {
 
 		const item = await Item.findByIdAndDelete(id);
 
-		// TODO: Delete all the transaction Info related to this item (institution and account)
+		// Delete all the transaction Info related to this item (institution and account)
 		const accountIds = item.accounts.map((account) => account.account_id);
 		await Transaction.deleteMany({
 			user: user._id,
@@ -105,7 +105,7 @@ exports.handleGetDashboard = async (req, res, next) => {
 			filterDate: { filterDate },
 		} = req.body;
 
-		const { Transaction } = getConnection(user._id);
+		const { Transaction } = await getConnection(user._id, user.mongoDBURL);
 		if (isEmpty(Transaction))
 			return res.status(403).json("Personal Database Connection Error");
 

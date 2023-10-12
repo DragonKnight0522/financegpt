@@ -27,10 +27,10 @@ const createConnection = async (userId, mongoDBURL) => {
 			});
 
 			conn.on("connected", () => {
-				console.log(
-					"MongoDB Connection Established Successfully!",
-					userId
-				);
+				// console.log(
+				// 	"MongoDB Connection Established Successfully!",
+				// 	userId
+				// );
 				const Chat = conn.model("Chat", ChatModel.schema);
 				const Transaction = conn.model(
 					"Transaction",
@@ -45,14 +45,14 @@ const createConnection = async (userId, mongoDBURL) => {
 			});
 
 			conn.on("error", (err) => {
-				console.error(
-					`MongoDB Connection ${userId} Error: ${err.message}`
-				);
+				// console.error(
+				// 	`MongoDB Connection ${userId} Error: ${err.message}`
+				// );
 				return resolve(conn.readyState);
 			});
 
 			conn.on("disconnected", () => {
-				console.warn("MongoDB Connection Disconnected", userId);
+				// console.warn("MongoDB Connection Disconnected", userId);
 				return resolve(conn.readyState);
 			});
 		} catch (e) {
@@ -65,11 +65,17 @@ process.on("unhandledRejection", (reason, promise) => {
 	console.error("Unhandled Rejection");
 });
 
-const getConnection = (userId) => {
+const getConnection = async (userId, mongoDBURL) => {
 	if (checkConnection(userId)) return connections[userId];
 	else {
-		console.log("Not Found Connection");
-		return {};
+		// console.log("Not Found Connection, Recreating connection");
+		const res = await createConnection(userId, mongoDBURL);
+		if (res !== 1) {
+			// console.log("Recreating failed");
+			return {};
+		}
+		// console.log("Recreating success");
+		return connections[userId];
 	}
 };
 

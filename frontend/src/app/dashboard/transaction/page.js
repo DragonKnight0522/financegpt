@@ -105,7 +105,7 @@ export default function Dashboard() {
 	}, [isItemAccess, isTransactionsLoaded, dispatch, getAllCategories]);
 
 	return (
-		<main className="min-h-screen">
+		<main className="min-h-screen p-4 m-auto max-w-7xl">
 			<Text className="mt-6">
 				{"A bird's eye view of your financial positions."}
 			</Text>
@@ -125,78 +125,90 @@ export default function Dashboard() {
 							/>
 						</Flex>
 					</div>
-					<div className="flex space-x-2">
-						<MultiSelect
-							className="max-w-full sm:max-w-xs"
-							onValueChange={setSelectedCategories}
-							placeholder="Select Category..."
-						>
-							{categories?.map((item) => (
-								<MultiSelectItem
-									key={item.category_id}
-									value={
-										item.hierarchy[
-											item.hierarchy.length - 1
-										]
-									}
-								>
-									{item.hierarchy[item.hierarchy.length - 1]}
-								</MultiSelectItem>
-							))}
-						</MultiSelect>
-						<SearchInput
-							className="flex-1"
-							placeholder="Merchant Name..."
-							value={merchantName}
-							onChange={(e) => setMerchantName(e.target.value)}
-							onSearch={fetchData}
-						/>
-						<Select
-							className="flex-1"
-							defaultValue="all"
-							onValueChange={setSelectedPaymentChannel}
-						>
-							<SelectItem value="all">
-								All Payment Channel
-							</SelectItem>
-							<SelectItem value="online">
-								Online Channel
-							</SelectItem>
-							<SelectItem value="in store">
-								In Store Channel
-							</SelectItem>
-							<SelectItem value="other">Other Channel</SelectItem>
-						</Select>
-
-						<Datepicker
-							containerClassName="relative flex-2 text-gray-700 min-w-[15rem]"
-							inputClassName="w-full text-sm outline-none text-left whitespace-nowrap truncate rounded-tremor-default focus:ring-2 transition duration-100 shadow-tremor-input focus:border-tremor-brand-subtle focus:ring-tremor-brand-muted dark:shadow-dark-tremor-input dark:focus:border-dark-tremor-brand-subtle dark:focus:ring-dark-tremor-brand-muted pl-3 pr-8 py-2 border bg-tremor-background dark:bg-dark-tremor-background hover:bg-tremor-background-muted dark:hover:bg-dark-tremor-background-muted text-tremor-content-emphasis dark:text-dark-tremor-content-emphasis border-tremor-border dark:border-dark-tremor-border"
-							useRange={false}
-							showShortcuts={true}
-							value={filterDate}
-							onChange={setFilterDate}
-						/>
-					</div>
-					<div className="flex items-center mt-2">
-						<MultiSelect
-							className="max-w-full mr-2 sm:max-w-xs"
-							onValueChange={setSelectedAccounts}
-							placeholder="Select Accounts..."
-						>
-							{items?.map((item) => {
-								return item?.accounts?.map((account) => (
+					<div className="md:space-x-2 md:flex">
+						<div className="flex w-full space-x-2">
+							<MultiSelect
+								className="max-w-full sm:max-w-xs"
+								onValueChange={setSelectedCategories}
+								placeholder="Select Category..."
+							>
+								{categories?.map((item) => (
 									<MultiSelectItem
-										key={account.account_id}
-										value={account.account_id}
+										key={item.category_id}
+										value={
+											item.hierarchy[
+												item.hierarchy.length - 1
+											]
+										}
 									>
-										{account.name}
+										{
+											item.hierarchy[
+												item.hierarchy.length - 1
+											]
+										}
 									</MultiSelectItem>
-								));
-							})}
-						</MultiSelect>
-						<div className="flex w-full">
+								))}
+							</MultiSelect>
+							<SearchInput
+								className="flex-1"
+								placeholder="Merchant Name..."
+								value={merchantName}
+								onChange={(e) =>
+									setMerchantName(e.target.value)
+								}
+								onSearch={fetchData}
+							/>
+						</div>
+						<div className="flex w-full mt-2 space-x-2 md:mt-0">
+							<Select
+								className="flex-1"
+								defaultValue="all"
+								onValueChange={setSelectedPaymentChannel}
+							>
+								<SelectItem value="all">
+									All Payment Channel
+								</SelectItem>
+								<SelectItem value="online">
+									Online Channel
+								</SelectItem>
+								<SelectItem value="in store">
+									In Store Channel
+								</SelectItem>
+								<SelectItem value="other">
+									Other Channel
+								</SelectItem>
+							</Select>
+
+							<Datepicker
+								containerClassName="relative flex-2 text-gray-700 min-w-[15rem]"
+								inputClassName="w-full text-sm outline-none text-left whitespace-nowrap truncate rounded-tremor-default focus:ring-2 transition duration-100 shadow-tremor-input focus:border-tremor-brand-subtle focus:ring-tremor-brand-muted dark:shadow-dark-tremor-input dark:focus:border-dark-tremor-brand-subtle dark:focus:ring-dark-tremor-brand-muted pl-3 pr-8 py-2 border bg-tremor-background dark:bg-dark-tremor-background hover:bg-tremor-background-muted dark:hover:bg-dark-tremor-background-muted text-tremor-content-emphasis dark:text-dark-tremor-content-emphasis border-tremor-border dark:border-dark-tremor-border"
+								useRange={false}
+								showShortcuts={true}
+								value={filterDate}
+								onChange={setFilterDate}
+							/>
+						</div>
+					</div>
+					<div className="items-center mt-2 md:flex">
+						<div className="flex w-full mt-2 md:mt-0">
+							<MultiSelect
+								className="max-w-full mr-2 sm:max-w-xs"
+								onValueChange={setSelectedAccounts}
+								placeholder="Select Accounts..."
+							>
+								{items?.map((item) => {
+									return item?.accounts?.map((account) => (
+										<MultiSelectItem
+											key={account.account_id}
+											value={account.account_id}
+										>
+											{account.name}
+										</MultiSelectItem>
+									));
+								})}
+							</MultiSelect>
 							<NumberInput
-								className="w-[5rem] mr-2"
+								className="w-[4rem] mr-2"
 								enableStepper={false}
 								placeholder="Min Price"
 								value={priceRange?.minPrice}
@@ -209,7 +221,7 @@ export default function Dashboard() {
 								onSubmit={fetchData}
 							/>
 							<NumberInput
-								className="w-[5rem]"
+								className="w-[4rem]"
 								enableStepper={false}
 								placeholder="Max Price"
 								value={priceRange?.maxPrice}
@@ -230,7 +242,7 @@ export default function Dashboard() {
 							setCurrentPage={setCurrentPage}
 						/>
 					</div>
-					<Table className="mt-6">
+					<Table className="mt-6 overflow-auto">
 						<TableHead>
 							<TableRow>
 								<TableHeaderCell>Name</TableHeaderCell>
