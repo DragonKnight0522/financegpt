@@ -11,17 +11,17 @@ export default function Modal({
 			{showModal && (
 				<div className="fixed inset-0 z-50 overflow-y-auto">
 					<div
-						className="fixed inset-0 w-full h-full bg-black opacity-40"
+						className="fixed inset-0 h-full w-full bg-black opacity-40"
 						onClick={() => setShowModal(false)}
 					/>
-					<div className="flex items-center min-h-screen px-4 py-8">
-						<div className="relative w-full max-w-lg p-4 mx-auto bg-white rounded-md shadow-lg">
+					<div className="flex min-h-screen items-center px-4 py-8">
+						<div className="relative mx-auto w-full max-w-lg rounded-md bg-white p-4 shadow-lg">
 							<div className="mt-3 sm:flex">
 								{type === "delete" ? (
-									<div className="flex items-center justify-center flex-none w-12 h-12 mx-auto bg-red-100 rounded-full">
+									<div className="mx-auto flex h-12 w-12 flex-none items-center justify-center rounded-full bg-red-100">
 										<svg
 											xmlns="http://www.w3.org/2000/svg"
-											className="w-6 h-6 text-red-600"
+											className="h-6 w-6 text-red-600"
 											viewBox="0 0 20 20"
 											fill="currentColor"
 										>
@@ -33,10 +33,10 @@ export default function Modal({
 										</svg>
 									</div>
 								) : (
-									<div className="flex items-center justify-center flex-none w-12 h-12 mx-auto bg-blue-100 rounded-full">
+									<div className="mx-auto flex h-12 w-12 flex-none items-center justify-center rounded-full bg-blue-100">
 										<svg
 											xmlns="http://www.w3.org/2000/svg"
-											className="w-6 h-6 text-red-600"
+											className="h-6 w-6 text-red-600"
 											viewBox="0 0 20 20"
 											fill="currentColor"
 										>
@@ -48,22 +48,22 @@ export default function Modal({
 										</svg>
 									</div>
 								)}
-								<div className="w-full mt-2 text-center sm:ml-4 sm:text-left">
+								<div className="mt-2 w-full text-center sm:ml-4 sm:text-left">
 									<h4 className="text-lg font-medium text-gray-800">
 										{title}
 									</h4>
 									<p className="mt-2 text-[15px] leading-relaxed text-gray-500">
 										{content}
 									</p>
-									<div className="items-center gap-2 mt-3 sm:flex">
+									<div className="mt-3 items-center gap-2 sm:flex">
 										<button
-											className="w-full mt-2 p-2.5 flex-1 text-white bg-red-600 rounded-md outline-none ring-offset-2 ring-red-600 focus:ring-2"
+											className="mt-2 w-full flex-1 rounded-md bg-red-600 p-2.5 text-white outline-none ring-red-600 ring-offset-2 focus:ring-2"
 											onClick={onOk}
 										>
 											Delete
 										</button>
 										<button
-											className="w-full mt-2 p-2.5 flex-1 text-gray-800 rounded-md outline-none border ring-offset-2 ring-indigo-600 focus:ring-2"
+											className="mt-2 w-full flex-1 rounded-md border p-2.5 text-gray-800 outline-none ring-indigo-600 ring-offset-2 focus:ring-2"
 											onClick={() => setShowModal(false)}
 										>
 											Cancel

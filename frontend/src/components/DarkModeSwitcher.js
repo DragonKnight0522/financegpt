@@ -10,7 +10,7 @@ const DarkModeSwitcher = () => {
 
 	return (
 		<li>
-			<label className="relative m-0 block h-[1.875rem] w-14 rounded-full bg-gray-200 dark:bg-tremor-dark-background">
+			<label className="dark:bg-tremor-dark-background relative m-0 block h-[1.875rem] w-14 rounded-full bg-gray-200">
 				<input
 					type="checkbox"
 					onChange={() => {
@@ -18,10 +18,10 @@ const DarkModeSwitcher = () => {
 							setTheme(theme === "light" ? "dark" : "light");
 						});
 					}}
-					className="absolute top-0 z-50 w-full h-full m-0 opacity-0 cursor-pointer dur"
+					className="dur absolute top-0 z-50 m-0 h-full w-full cursor-pointer opacity-0"
 				/>
 				<span
-					className={`absolute top-1/2 left-[3px] flex h-[1.5rem] w-6 -translate-y-1/2 translate-x-0 items-center justify-center rounded-full bg-white shadow-switcher duration-75 ease-linear ${
+					className={`shadow-switcher absolute left-[3px] top-1/2 flex h-[1.5rem] w-6 -translate-y-1/2 translate-x-0 items-center justify-center rounded-full bg-white duration-75 ease-linear ${
 						isEmpty(theme) || theme === "dark"
 							? ""
 							: "!right-[3px] !translate-x-full"

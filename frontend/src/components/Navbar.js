@@ -47,10 +47,10 @@ const Navbar = () => {
 	}, [isItemAccess, linkSuccess]);
 
 	return (
-		<header className="sticky top-0 z-10 flex w-full px-4 border-b bg-gradient-to-b from-background/10 via-background/50 to-background/80 backdrop-blur-xl">
-			<div className="flex items-center justify-between flex-grow px-4 shadow-2">
-				<div className="flex items-center h-full">
-					<div className="flex items-center justify-center w-10 h-10 mr-4 font-bold text-black bg-gray-200 rounded-full">
+		<header className="sticky top-0 z-10 flex w-full border-b bg-gradient-to-b from-background/10 via-background/50 to-background/80 px-4 backdrop-blur-xl">
+			<div className="shadow-2 flex grow items-center justify-between px-4">
+				<div className="flex h-full items-center">
+					<div className="mr-4 flex h-10 w-10 items-center justify-center rounded-full bg-gray-200 font-bold text-black">
 						Q
 					</div>
 					<div className="flex gap-2">
@@ -61,8 +61,8 @@ const Navbar = () => {
 									className={`${
 										pathname == item.href
 											? "border-slate-500 text-gray-900 dark:text-gray-100"
-											: "border-transparent text-gray-500 dark:text-gray-600 hover:text-gray-700 hover:border-gray-300 dark:hover:text-gray-300 dark:hover:border-gray-700"
-									} inline-flex items-center md:px-1 md:mx-2 py-5 border-b-2 text-xs md:text-sm font-medium `}
+											: "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 dark:text-gray-600 dark:hover:border-gray-700 dark:hover:text-gray-300"
+									} inline-flex items-center border-b-2 py-5 text-xs font-medium md:mx-2 md:px-1 md:text-sm `}
 								>
 									<Link href={item.href}>{item.label}</Link>
 								</li>
@@ -72,7 +72,7 @@ const Navbar = () => {
 				</div>
 				<div className="flex items-center">
 					{isTransactionsLoaded == false && (
-						<div className="absolute top-0 left-0 w-screen h-screen">
+						<div className="absolute left-0 top-0 h-screen w-screen">
 							<img
 								className="m-auto mt-[50vh]"
 								src="/loading.svg"
