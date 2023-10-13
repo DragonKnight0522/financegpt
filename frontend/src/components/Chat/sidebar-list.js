@@ -22,7 +22,7 @@ export function SidebarList() {
 	return (
 		<div className="flex-1 overflow-auto">
 			{chats?.length ? (
-				<div className="px-2 space-y-2">
+				<div className="space-y-2 px-2">
 					{chats.map((chat) => (
 						<SidebarItem key={chat.id} chat={chat}>
 							<SidebarActions

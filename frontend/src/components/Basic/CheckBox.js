@@ -17,11 +17,11 @@ const Checkbox = ({
 			name={name}
 			className={`${
 				className === undefined ? "" : className
-			} flex items-center cursor-pointer`}
+			} flex cursor-pointer items-center`}
 		>
 			<input
 				type="checkbox"
-				className="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500"
+				className="h-5 w-5 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-500 dark:bg-gray-600 dark:ring-offset-gray-700 dark:focus:ring-blue-600 dark:focus:ring-offset-gray-700"
 			/>
 			<span className="ml-2 text-lg font-bold">{label}</span>
 		</label>

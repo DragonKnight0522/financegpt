@@ -71,15 +71,15 @@ const WelcomeModal = () => {
 			{session?.user?.isNewUser && (
 				<div className="fixed inset-0 z-50 overflow-hidden">
 					<div
-						className="fixed inset-0 w-full h-full bg-gray-200"
+						className="fixed inset-0 h-full w-full bg-gray-200"
 						// onClick={() => setShowModal(false)}
 					/>
-					<div className="flex items-center w-screen h-screen px-4 py-8 overflow-hidden">
-						<div className="relative overflow-hidden min-w-[40vw] max-w-lg p-10 mx-auto bg-white rounded-md shadow-lg">
+					<div className="flex h-screen w-screen items-center overflow-hidden px-4 py-8">
+						<div className="relative mx-auto min-w-[40vw] max-w-lg overflow-hidden rounded-md bg-white p-10 shadow-lg">
 							<Metric className="truncate">
 								Welcome To Finance GPT
 							</Metric>
-							<div className="flex py-4 mt-2 text-gray-500 flex-nowrap h-[50vh] relative">
+							<div className="relative mt-2 flex h-[50vh] flex-nowrap py-4 text-gray-500">
 								<Transition
 									appear={false}
 									unmount={false}
@@ -190,7 +190,7 @@ const WelcomeModal = () => {
 									</div>
 								</Transition>
 							</div>
-							<div className="w-full gap-2 mt-3">
+							<div className="mt-3 w-full gap-2">
 								<nav
 									className="flex items-center justify-between"
 									aria-label="Progress"
@@ -202,33 +202,33 @@ const WelcomeModal = () => {
 									>
 										Prev
 									</button>
-									<ol className="flex items-center mx-8 space-x-5">
+									<ol className="mx-8 flex items-center space-x-5">
 										{steps.map((step, i) => (
 											<li key={`step_${i}`}>
 												{step.status === "complete" ? (
-													<div className="block w-2.5 h-2.5 bg-indigo-600 rounded-full hover:bg-indigo-900 cursor-pointer">
+													<div className="block h-2.5 w-2.5 cursor-pointer rounded-full bg-indigo-600 hover:bg-indigo-900">
 														<span className="sr-only"></span>
 													</div>
 												) : step.status ===
 												  "current" ? (
 													<div
-														className="relative flex items-center justify-center cursor-pointer"
+														className="relative flex cursor-pointer items-center justify-center"
 														aria-current="step"
 													>
 														<span
-															className="absolute flex w-5 h-5 p-px"
+															className="absolute flex h-5 w-5 p-px"
 															aria-hidden="true"
 														>
-															<span className="w-full h-full bg-indigo-200 rounded-full" />
+															<span className="h-full w-full rounded-full bg-indigo-200" />
 														</span>
 														<span
-															className="relative block w-2.5 h-2.5 bg-indigo-600 rounded-full"
+															className="relative block h-2.5 w-2.5 rounded-full bg-indigo-600"
 															aria-hidden="true"
 														/>
 														<span className="sr-only"></span>
 													</div>
 												) : (
-													<div className="block w-2.5 h-2.5 bg-gray-200 rounded-full hover:bg-gray-400 cursor-pointer">
+													<div className="block h-2.5 w-2.5 cursor-pointer rounded-full bg-gray-200 hover:bg-gray-400">
 														<span className="sr-only"></span>
 													</div>
 												)}

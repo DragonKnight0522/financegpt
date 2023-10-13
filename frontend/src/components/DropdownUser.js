@@ -46,14 +46,14 @@ const DropdownUser = () => {
 				className="flex items-center gap-4"
 				href="#"
 			>
-				<span className="hidden text-right lg:block dark:text-white">
+				<span className="hidden text-right dark:text-white lg:block">
 					<span className="block text-sm font-medium">
 						{data?.user?.name}
 					</span>
 					<span className="block text-xs">{data?.user?.email}</span>
 				</span>
 
-				<span className="w-12 h-12">
+				<span className="h-12 w-12">
 					{data?.user?.image && (
 						<img
 							className="rounded-full"
@@ -87,11 +87,11 @@ const DropdownUser = () => {
 				ref={dropdown}
 				onFocus={() => setDropdownOpen(true)}
 				onBlur={() => setDropdownOpen(false)}
-				className={`absolute right-0 mt-4 flex w-48 flex-col rounded-sm border border-stroke bg-white shadow-default dark:bg-dark-tremor-background ${
+				className={`border-stroke shadow-default absolute right-0 mt-4 flex w-48 flex-col rounded-sm border bg-white dark:bg-dark-tremor-background ${
 					dropdownOpen ? "block" : "hidden"
 				}`}
 			>
-				<ul className="flex flex-col gap-5 py-5 border-b px-7 border-stroke">
+				<ul className="border-stroke flex flex-col gap-5 border-b px-7 py-5">
 					<li onClick={() => setDropdownOpen(false)}>
 						<ConnectButton>
 							<LinkIcon className="w-[22px]" />

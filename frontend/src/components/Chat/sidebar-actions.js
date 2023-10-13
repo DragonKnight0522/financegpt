@@ -88,7 +88,7 @@ export function SidebarActions({ chat, removeChat, shareChat }) {
                     <TooltipTrigger asChild>
                         <Button
                             variant="ghost"
-                            className="w-6 h-6 p-0 hover:bg-background"
+                            className="h-6 w-6 p-0 hover:bg-background"
                             disabled={isRemovePending}
                             onClick={() => setDeleteDialogOpen(true)}
                         >
@@ -108,7 +108,7 @@ export function SidebarActions({ chat, removeChat, shareChat }) {
                             chat.
                         </DialogDescription>
                     </DialogHeader>
-                    <div className="p-4 space-y-1 text-sm border rounded-md">
+                    <div className="space-y-1 rounded-md border p-4 text-sm">
                         <div className="font-medium">{chat.title}</div>
                         <div className="text-muted-foreground">
                             {formatDate(chat.createdAt)} ·{' '}

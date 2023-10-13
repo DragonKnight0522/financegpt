@@ -105,7 +105,7 @@ export default function Dashboard() {
 	}, [isItemAccess, isTransactionsLoaded, dispatch, getAllCategories]);
 
 	return (
-		<main className="min-h-screen p-4 m-auto max-w-7xl">
+		<main className="m-auto min-h-screen max-w-7xl p-4">
 			<Text className="mt-6">
 				{"A bird's eye view of your financial positions."}
 			</Text>
@@ -125,7 +125,7 @@ export default function Dashboard() {
 							/>
 						</Flex>
 					</div>
-					<div className="md:space-x-2 md:flex">
+					<div className="md:flex md:space-x-2">
 						<div className="flex w-full space-x-2">
 							<MultiSelect
 								className="max-w-full sm:max-w-xs"
@@ -159,7 +159,7 @@ export default function Dashboard() {
 								onSearch={fetchData}
 							/>
 						</div>
-						<div className="flex w-full mt-2 space-x-2 md:mt-0">
+						<div className="mt-2 flex w-full space-x-2 md:mt-0">
 							<Select
 								className="flex-1"
 								defaultValue="all"
@@ -189,10 +189,10 @@ export default function Dashboard() {
 							/>
 						</div>
 					</div>
-					<div className="items-center mt-2 md:flex">
-						<div className="flex w-full mt-2 md:mt-0">
+					<div className="mt-2 items-center md:flex">
+						<div className="mt-2 flex w-full md:mt-0">
 							<MultiSelect
-								className="max-w-full mr-2 sm:max-w-xs"
+								className="mr-2 max-w-full sm:max-w-xs"
 								onValueChange={setSelectedAccounts}
 								placeholder="Select Accounts..."
 							>
@@ -208,7 +208,7 @@ export default function Dashboard() {
 								})}
 							</MultiSelect>
 							<NumberInput
-								className="w-[4rem] mr-2"
+								className="mr-2 w-[4rem]"
 								enableStepper={false}
 								placeholder="Min Price"
 								value={priceRange?.minPrice}
@@ -288,7 +288,7 @@ export default function Dashboard() {
 									<TableCell className="text-right">
 										{dateFormat(item.date)}
 									</TableCell>
-									<TableCell className="flex flex-wrap max-w-[12rem] justify-end">
+									<TableCell className="flex max-w-[12rem] flex-wrap justify-end">
 										{item.category?.map((categoryItem) => (
 											<span
 												className="text-xs"

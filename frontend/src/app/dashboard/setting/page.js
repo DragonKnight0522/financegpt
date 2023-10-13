@@ -94,11 +94,11 @@ export default function Setting() {
 	};
 
 	return (
-		<main className="min-h-screen p-4 m-auto max-w-7xl">
+		<main className="m-auto min-h-screen max-w-7xl p-4">
 			<Text className="mt-6">
 				{"A bird's eye view of your financial positions."}
 			</Text>
-			<Grid numItemsLg={2} className="gap-6 mt-6">
+			<Grid numItemsLg={2} className="mt-6 gap-6">
 				<Card>
 					<Metric className="truncate">User Info</Metric>
 					<Flex className="mt-4 space-x-2">
@@ -138,7 +138,7 @@ export default function Setting() {
 						<div className="w-1/3 truncate" />
 						<div className="flex w-full min-w-[10rem]">
 							<TextInput
-								className="min-w-[5rem] mr-4"
+								className="mr-4 min-w-[5rem]"
 								placeholder="State"
 								onChange={(e) =>
 									setUserInfo({

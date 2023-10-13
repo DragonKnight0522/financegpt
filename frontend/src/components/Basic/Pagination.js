@@ -19,7 +19,7 @@ const Pagination = ({
 	);
 
 	return (
-		<div className="flex items-center justify-between mt-2 ml-0 md:ml-2 md:mt-0">
+		<div className="ml-0 mt-2 flex items-center justify-between md:ml-2 md:mt-0">
 			<div>
 				<Select
 					className="min-w-[5rem] text-center"
@@ -32,9 +32,9 @@ const Pagination = ({
 					<SelectItem value={100}>100</SelectItem>
 				</Select>
 			</div>
-			<div className="flex ml-2">
+			<div className="ml-2 flex">
 				<button
-					className="px-3 py-1 font-bold text-white bg-blue-600 rounded-l cursor-pointer whitespace-nowrap hover:bg-blue-600 focus:outline-none"
+					className="cursor-pointer whitespace-nowrap rounded-l bg-blue-600 px-3 py-1 font-bold text-white hover:bg-blue-600 focus:outline-none"
 					disabled={currentPage === 1}
 					onClick={() => setCurrentPage(currentPage - 1)}
 				>
@@ -43,7 +43,7 @@ const Pagination = ({
 				{startPage > 2 && (
 					<>
 						<button
-							className="px-3 py-1 mx-1 font-bold text-blue-600 border border-blue-600 rounded-sm cursor-pointer hover:bg-blue-600 hover:text-white focus:outline-none"
+							className="mx-1 cursor-pointer rounded-sm border border-blue-600 px-3 py-1 font-bold text-blue-600 hover:bg-blue-600 hover:text-white focus:outline-none"
 							onClick={() => setCurrentPage(1)}
 						>
 							1
@@ -54,11 +54,11 @@ const Pagination = ({
 				{pages.map((number) => (
 					<button
 						key={number}
-						className={`px-3 py-1 mx-1 font-bold ${
+						className={`mx-1 px-3 py-1 font-bold ${
 							number === currentPage
-								? "text-white bg-blue-600"
+								? "bg-blue-600 text-white"
 								: "text-blue-600"
-						}  border border-blue-600 rounded-sm cursor-pointer hover:bg-blue-600 hover:text-white focus:outline-none`}
+						}  cursor-pointer rounded-sm border border-blue-600 hover:bg-blue-600 hover:text-white focus:outline-none`}
 						onClick={() => setCurrentPage(number)}
 					>
 						{number}
@@ -68,7 +68,7 @@ const Pagination = ({
 					<>
 						<div className="px-3 py-1">...</div>
 						<button
-							className="px-3 py-1 mx-1 font-bold text-blue-600 border border-blue-600 rounded-sm cursor-pointer hover:bg-blue-600 hover:text-white focus:outline-none"
+							className="mx-1 cursor-pointer rounded-sm border border-blue-600 px-3 py-1 font-bold text-blue-600 hover:bg-blue-600 hover:text-white focus:outline-none"
 							onClick={() => setCurrentPage(totalPages)}
 						>
 							{totalPages}
@@ -76,7 +76,7 @@ const Pagination = ({
 					</>
 				)}
 				<button
-					className="px-3 py-1 font-bold text-white bg-blue-600 rounded-r cursor-pointer whitespace-nowrap hover:bg-blue-600 focus:outline-none"
+					className="cursor-pointer whitespace-nowrap rounded-r bg-blue-600 px-3 py-1 font-bold text-white hover:bg-blue-600 focus:outline-none"
 					disabled={currentPage === totalPages}
 					onClick={() => setCurrentPage(currentPage + 1)}
 				>

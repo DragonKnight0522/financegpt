@@ -104,8 +104,8 @@ export default function Dashboard() {
 	};
 
 	return (
-		<main className="min-h-screen p-4 m-auto max-w-7xl">
-			<Text className="mt-6 mb-2">
+		<main className="m-auto min-h-screen max-w-7xl p-4">
+			<Text className="mb-2 mt-6">
 				{"A bird's eye view of your financial positions."}
 			</Text>
 			<Grid numItemsSm={2} numItemsLg={4} className="gap-6">
