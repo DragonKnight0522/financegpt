@@ -6,7 +6,7 @@ export default function RootLayout({ children }) {
     return (
         <>
             <div className={`grid min-h-screen`}>
-                <div className="relative bg-gray-50 bg-muted/50">
+                <div className="relative bg-muted/50">
                     <Navbar />
                     {children}
                 </div>
