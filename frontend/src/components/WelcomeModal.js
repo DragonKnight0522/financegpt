@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState } from "react";
 import { Transition } from "@headlessui/react";
 import { useSession } from "next-auth/react";
 import { useDispatch } from "react-redux";

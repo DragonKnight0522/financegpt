@@ -1,4 +1,5 @@
 import * as React from "react";
+import ReactDOM from "react-dom";
 import Link from "next/link";
 import { useEffect, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -10,11 +11,6 @@ import useGetAccounts from "@/hooks/useGetAccounts";
 import { getUserInfo } from "@/store/actions/useUser";
 import WelcomeModal from "./WelcomeModal";
 import { usePathname } from "next/navigation";
-import { Sidebar } from "@/components/Chat/sidebar";
-import { SidebarList } from "@/components/Chat/sidebar-list";
-import { ClearHistory } from "@/components/Chat/clear-history";
-import { SidebarFooter } from "@/components/Chat/sidebar-footer";
-import { clearChats } from "@/hooks/actions";
 
 const Navbar = () => {
 	const { linkSuccess, isItemAccess, isTransactionsLoaded } = useSelector(
@@ -54,17 +50,6 @@ const Navbar = () => {
 		<header className="sticky top-0 z-10 flex w-full px-4 border-b bg-gradient-to-b from-background/10 via-background/50 to-background/80 backdrop-blur-xl">
 			<div className="flex items-center justify-between flex-grow px-4 shadow-2">
 				<div className="flex items-center h-full">
-					<Sidebar>
-						<React.Suspense
-							fallback={<div className="flex-1 overflow-auto" />}
-						>
-							{/* @ts-ignore */}
-							<SidebarList />
-						</React.Suspense>
-						<SidebarFooter>
-							<ClearHistory clearChats={clearChats} />
-						</SidebarFooter>
-					</Sidebar>
 					<div className="flex items-center justify-center w-10 h-10 mr-4 font-bold text-black bg-gray-200 rounded-full">
 						Q
 					</div>

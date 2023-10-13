@@ -62,7 +62,7 @@ const createConnection = async (userId, mongoDBURL) => {
 };
 
 process.on("unhandledRejection", (reason, promise) => {
-	console.error("Unhandled Rejection");
+	console.error("Unhandled Rejection", reason);
 });
 
 const getConnection = async (userId, mongoDBURL) => {

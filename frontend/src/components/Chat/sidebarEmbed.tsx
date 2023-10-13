@@ -1,17 +1,6 @@
 "use client";
 
 import * as React from "react";
-
-import { Button } from "@/components/Chat/ui/button";
-import {
-	Sheet,
-	SheetContent,
-	SheetHeader,
-	SheetTitle,
-	SheetTrigger,
-} from "@/components/Chat/ui/sheet";
-import { IconSidebar } from "@/components/Chat/ui/icons";
-
 export interface SidebarProps {
 	children?: React.ReactNode;
 }

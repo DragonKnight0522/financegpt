@@ -11,7 +11,7 @@ const isEmpty = (value) =>
 	(typeof value === "string" && value.trim().length === 0);
 
 const handleError = (error, res) => {
-	// console.log(error);
+	console.log(error);
 	return res.status(500).json({ error });
 };
 

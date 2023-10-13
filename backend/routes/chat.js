@@ -6,11 +6,14 @@ const adminMiddleware = require("../middlewares/admin.middleware");
 const {
 	getAIMessage,
 	getChatInfo,
+	getChatInfoById,
 	deleteChatChannel,
 	updateChatChannelTitle,
 } = require("../controllers/chat");
 
 router.get("/", authMiddleware, getChatInfo);
+
+router.get("/:id", authMiddleware, getChatInfoById);
 
 router.post("/", authMiddleware, getAIMessage);
 
