@@ -1,6 +1,7 @@
 /** @type {import('next').NextConfig} */
 
 const nextConfig = {
+	reactStrictMode: true,
 	async rewrites() {
 		return [
 			{
@@ -11,9 +12,6 @@ const nextConfig = {
 	},
 	images: {
 		domains: ["images.unsplash.com", "via.placeholder.com"],
-	},
-	experimental: {
-		serverActions: true,
 	},
 };
 

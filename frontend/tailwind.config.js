@@ -141,10 +141,6 @@ module.exports = {
 				"tremor-title": ["1.125rem", { lineHeight: "1.75rem" }],
 				"tremor-metric": ["1.875rem", { lineHeight: "2.25rem" }],
 			},
-			gridTemplateColumns: {
-				sidebar: "300px auto", //for sidebar layout
-				"sidebar-collapsed": "64px auto", //for sidebar layout
-			},
 			keyframes: {
 				"accordion-down": {
 					from: { height: 0 },

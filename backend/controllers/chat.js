@@ -13,7 +13,24 @@ exports.getChatInfo = async (req, res, next) => {
 				.json({ message: "Personal Database Connection Error" });
 
 		let chatHistory = await Chat.find({ user: user._id });
-		return res.send({ chatHistory });
+		return res.send(chatHistory);
+	} catch (error) {
+		handleError(error);
+	}
+};
+
+exports.getChatInfoById = async (req, res, next) => {
+	try {
+		const { user } = req;
+		const { id } = req.params;
+		const { Chat } = await getConnection(user._id, user.mongoDBURL);
+		if (isEmpty(Chat))
+			return res
+				.status(403)
+				.json({ message: "Personal Database Connection Error" });
+
+		let chatHistory = await Chat.findOne({ user: user._id, id });
+		return res.send(chatHistory);
 	} catch (error) {
 		handleError(error);
 	}
@@ -22,37 +39,47 @@ exports.getChatInfo = async (req, res, next) => {
 exports.getAIMessage = async (req, res, next) => {
 	try {
 		const { user } = req;
-		const { message, _id, title } = req.body;
+		const { messages, previewToken, id } = req.body;
 		const { Chat } = await getConnection(user._id, user.mongoDBURL);
 		if (isEmpty(Chat))
 			return res
 				.status(403)
 				.json({ message: "Personal Database Connection Error" });
 
-		let chatChannel;
-		if (isEmpty(_id)) {
-			chatChannel = await new Chat().save();
-		} else {
-			chatChannel = await Chat.findById(_id);
-		}
-		// const aiResponse = await getResponseOpenAI();
-		const aiResponse =
-			"This is long sen open ai response about " +
-			message +
-			"\n the second paragraph is also here" +
-			"\n the third paragraph is also here";
-		chatChannel.title = title;
-		chatChannel.user = user._id;
-		chatChannel.chat.push({ role: 1, message });
-		chatChannel.chat.push({ role: 0, message: aiResponse });
-		await chatChannel.save();
+		const aiResponse = "well done! ";
+		res.write(aiResponse);
 
-		return res.send({
-			message: aiResponse,
-			_id: chatChannel._id,
-		});
+		const title = messages[0].content.substring(0, 100);
+		const createdAt = Date.now();
+		const path = `/dashboard/chat/${id}`;
+		const payload = {
+			id,
+			title,
+			user: user._id,
+			createdAt,
+			path,
+			messages: [
+				...messages,
+				{
+					content: aiResponse,
+					role: "assistant",
+				},
+			],
+		};
+
+		await Chat.findOneAndUpdate(
+			{ id },
+			{ $setOnInsert: payload },
+			{
+				new: true,
+				upsert: true,
+			}
+		);
+
+		res.write(aiResponse);
+		return res.end();
 	} catch (error) {
-		handleError(error);
+		handleError(error, res);
 	}
 };
 
@@ -68,7 +95,7 @@ exports.deleteChatChannel = async (req, res, next) => {
 
 		if (id == "all")
 			await Chat.deleteMany({ user: new ObjectId(user._id) });
-		else await Chat.findByIdAndDelete(id);
+		else await Chat.deleteMany({ id });
 		res.json("success");
 	} catch (error) {
 		handleError(error);
