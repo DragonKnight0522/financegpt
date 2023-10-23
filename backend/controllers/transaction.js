@@ -9,7 +9,6 @@ exports.getTransaction = async (req, res, next) => {
 				currentPage,
 				pageSize,
 				filterDate,
-				merchantName,
 				priceRange,
 				selectedAccounts,
 				selectedCategories,
@@ -25,8 +24,14 @@ exports.getTransaction = async (req, res, next) => {
 
 		let query = { user: user._id };
 
-		if (!isEmpty(filterDate?.startDate)) {
-			query.date = { $gte: filterDate.startDate };
+		if (!isEmpty(filterDate?.startDate) || !user.storeAYear) {
+			let start_date = new Date(filterDate.startDate);
+			if (!user.storeAYear) {
+				const now = new Date();
+				const firstDate = new Date(now.getFullYear(), 0, 1);
+				if (start_date < firstDate) start_date = firstDate;
+			}
+			query.date = { $gte: start_date };
 		}
 		if (!isEmpty(filterDate?.endDate)) {
 			query.date = { ...query.date, $lte: filterDate.endDate };
@@ -37,13 +42,6 @@ exports.getTransaction = async (req, res, next) => {
 		}
 		if (priceRange.maxPrice !== "") {
 			query.amount = { ...query.amount, $lte: priceRange.maxPrice };
-		}
-
-		if (merchantName !== "") {
-			query.merchant_name = {
-				$regex: new RegExp(merchantName),
-				$options: "i",
-			};
 		}
 
 		if (selectedPaymentChannel != "all") {

@@ -1,28 +1,10 @@
-const admin = require.main.require("firebase-admin");
+const User = require("../models/user");
 
-module.exports = (req, res, next) => {
-	const authorization = req.header("Authorization");
-	if (authorization) {
-		let token = authorization.split(" ");
-		admin
-			.auth()
-			.verifyIdToken(token[1])
-			.then((decodedToken) => {
-				console.log(decodedToken);
-				if (decodedToken.role == "admin") {
-					res.locals.user = decodedToken;
-					next();
-				} else {
-					console.log("Admin Only Allowed");
-					res.sendStatus(401);
-				}
-			})
-			.catch((err) => {
-				console.log(err);
-				res.sendStatus(401);
-			});
+module.exports = async (req, res, next) => {
+	if (req.user.email === process.env.ADMIN_EMAIL) {
+		next();
 	} else {
-		console.log("Authorization header is not found");
+		console.log("Authorization header is not Admin");
 		res.sendStatus(401);
 	}
 };

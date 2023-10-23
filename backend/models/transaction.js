@@ -1,19 +1,26 @@
 const mongoose = require("mongoose");
 
 const transactionSchema = new mongoose.Schema({
+	// same field
 	user: {
 		// reference to User model
 		type: mongoose.Schema.Types.ObjectId,
 		ref: "User",
 	},
-	account_id: { type: String, index: true },
+	name: String,
 	amount: { type: Number, index: true },
+	account_id: { type: String, index: true },
+	date: { type: Date, index: true },
+
 	iso_currency_code: String,
 	unofficial_currency_code: String,
+
+	// only transaction fields
 	category: { type: [String], index: true },
+	payment_channel: { type: String, index: true },
+
 	category_id: String,
 	check_number: String,
-	date: { type: Date, index: true },
 	datetime: Date,
 	authorized_date: Date,
 	authorized_datetime: Date,
@@ -27,7 +34,6 @@ const transactionSchema = new mongoose.Schema({
 		lon: Number,
 		store_number: String,
 	},
-	name: String,
 	merchant_name: { type: String, index: true },
 	payment_meta: {
 		by_order_of: String,
@@ -39,7 +45,6 @@ const transactionSchema = new mongoose.Schema({
 		reason: String,
 		reference_number: String,
 	},
-	payment_channel: { type: String, index: true },
 	pending: Boolean,
 	pending_transaction_id: String,
 	personal_finance_category: {
@@ -49,6 +54,15 @@ const transactionSchema = new mongoose.Schema({
 	transaction_id: String,
 	transaction_code: String,
 	transaction_type: String,
+
+	cancel_transaction_id: String,
+	fees: Number,
+	investment_transaction_id: String,
+	price: Number,
+	quantity: Number,
+	security_id: String,
+	subtype: String,
+	type: String,
 });
 
 module.exports = mongoose.model("Transaction", transactionSchema);

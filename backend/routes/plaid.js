@@ -19,6 +19,7 @@ const {
 	payment,
 	incomeVerification,
 	getAllCategories,
+	transactionsSyncAll,
 } = require("../controllers/plaid");
 const authMiddleware = require("../middlewares/auth.middleware");
 
@@ -86,5 +87,8 @@ router.get("/payment", payment);
 router.get("/income/verification/paystubs", incomeVerification);
 
 router.get("/categories", getAllCategories);
+
+// Retrieve Transactions for all Item
+router.get("/transactions/all", authMiddleware, transactionsSyncAll);
 
 module.exports = router;

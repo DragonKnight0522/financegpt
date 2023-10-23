@@ -1,7 +1,0 @@
-export const SET_USER_INFO = "SET_USER_INFO";
-
-export const DELETE_ITEM_BY_ID = "DELETE_ITEM_BY_ID";
-
-export const UPDATE_USER_INFO = "UPDATE_USER_INFO";
-
-export const SET_DASHBOARD_DATA = "SET_DASHBOARD_DATA";

@@ -16,53 +16,52 @@ const handleError = (error, res) => {
 };
 
 const calculateKPIs = (apiResponse) => {
+	let totalCurrentBalance = 0.0;
+	let mainContributor = "";
+	let mainContributorBalance = 0;
 	let totalDebt = 0.0;
 	let totalAvailableCredit = 0.0;
 	let totalSpend = 0.0;
-	let totalCurrentBalance = 0.0;
+	let maxCreditLimit = 0.0;
 
 	apiResponse.accounts.forEach((account) => {
-		const { available, current, limit } = account.balances;
+		let { available, current, limit } = account.balances;
+		if (available == null) available = 0;
+		if (current == null) current = 0;
+		if (limit == null) limit = 0;
 
-		totalCurrentBalance += current || 0;
+		
+
+		if (account.type === "savings" || account.type == "investment" || account.type === "depository") {
+			totalCurrentBalance += available;
+		}
+
+		if (current > mainContributorBalance) {
+			mainContributorBalance = available;
+			mainContributor = account;
+			mainContributor.totalCurrentBalance = current;
+		}
 
 		if (account.type === "loan") {
 			totalDebt += current;
 		}
 
 		if (account.type === "credit") {
+			maxCreditLimit += limit;
 			totalSpend += current;
-			if (limit !== null) {
-				totalAvailableCredit += limit;
-			}
+			totalAvailableCredit += available;
 		}
+
 	});
 
 	return {
+		totalCurrentBalance,
+		mainContributor,
 		totalDebt,
 		totalAvailableCredit,
 		totalSpend,
-		totalCurrentBalance,
+		maxCreditLimit,
 	};
-};
-
-// Define function to calculate total monthly payment obligations
-const calculateTotalMonthlyPayments = (apiResponse) => {
-	let totalMonthlyPayments = 0.0;
-
-	apiResponse.liabilities?.credit?.forEach((credit) => {
-		totalMonthlyPayments += credit.minimum_payment_amount;
-	});
-
-	apiResponse.liabilities?.mortgage?.forEach((mortgage) => {
-		totalMonthlyPayments += mortgage.next_monthly_payment;
-	});
-
-	apiResponse.liabilities?.student?.forEach((student) => {
-		totalMonthlyPayments += student.minimum_payment_amount;
-	});
-
-	return totalMonthlyPayments;
 };
 
 // Define function to calculate net worth
@@ -72,29 +71,10 @@ const calculateNetWorth = (apiResponse) => {
 	return totalCurrentBalance - totalDebt;
 };
 
-// Define function to calculate credit utilization ratio
-const calculateCreditUtilization = (apiResponse) => {
-	let totalCreditLimit = 0.0;
-	let totalSpend = 0.0;
-
-	apiResponse.accounts.forEach((account) => {
-		if (account.type === "credit" && account.balances.limit !== null) {
-			totalCreditLimit += account.balances.limit;
-			totalSpend += account.balances.current;
-		}
-	});
-
-	return totalCreditLimit > 0
-		? ((totalSpend / totalCreditLimit) * 100).toFixed(2)
-		: 0;
-};
-
 module.exports = {
 	prettyPrintResponse,
 	handleError,
 	isEmpty,
 	calculateKPIs,
-	calculateTotalMonthlyPayments,
 	calculateNetWorth,
-	calculateCreditUtilization,
 };
