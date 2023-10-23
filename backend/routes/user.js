@@ -8,7 +8,10 @@ const {
 	deleteItemInfoById,
 	deleteUserAccount,
 	updateUserAccount,
-	handleGetDashboard
+	handleGetDashboard,
+	handleGetChartInfo,
+	handleGetAllUsers,
+	setUserPayByEmail,
 } = require("../controllers/user");
 
 router.get("/", authMiddleware, getUserInfo);
@@ -19,6 +22,12 @@ router.delete("/", authMiddleware, deleteUserAccount);
 
 router.post("/", authMiddleware, updateUserAccount);
 
-router.post("/dashboard", authMiddleware, handleGetDashboard);
+router.get("/dashboard", authMiddleware, handleGetDashboard);
+
+router.post("/charts", authMiddleware, handleGetChartInfo);
+
+router.post("/users", authMiddleware, adminMiddleware, handleGetAllUsers);
+
+router.post("/users/pay", authMiddleware, adminMiddleware, setUserPayByEmail);
 
 module.exports = router;

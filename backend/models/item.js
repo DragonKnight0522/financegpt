@@ -35,6 +35,8 @@ const itemSchema = new mongoose.Schema({
 	ACCESS_TOKEN: String,
 	ITEM_ID: String,
 	TRANSFER_ID: String,
+	endDate: String,
+	products: [String],
 });
 
 module.exports = mongoose.model("Item", itemSchema);

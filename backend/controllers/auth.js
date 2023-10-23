@@ -35,17 +35,32 @@ exports.signin = async (req, res) => {
 
 		let user = null;
 		let isNewUser = false;
-
+		let isPro = false;
+		let isAdmin = userInfo.value.email === process.env.ADMIN_EMAIL;
 		if (!userInfo.ok) {
 			res.status(500).json({ error: "Error in creating/updating user" });
 		} else {
 			user = userInfo.value;
 			isNewUser = userInfo.lastErrorObject.updatedExisting ? false : true;
+			isPro = user.Pro;
+			if (!isPro) {
+				// Assuming user.createdAt is a valid date string or null
+				const createdAtDate = new Date(user.createdAt);
+				const sevenDaysAgo = new Date();
+				sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+
+				if (createdAtDate > sevenDaysAgo) {
+					isPro = true;
+				}
+			}
 
 			// Check DB Connection
 			if (!isEmpty(user.mongoDBURL) && !checkConnection(user._id)) {
-				const res = await createConnection(user._id, user.mongoDBURL);
-				if (res !== 1)
+				const connRes = await createConnection(
+					user._id,
+					user.mongoDBURL
+				);
+				if (connRes !== 1)
 					return res.json({
 						message: "Personal database connection error.",
 						isNewUser,
@@ -53,7 +68,7 @@ exports.signin = async (req, res) => {
 			}
 
 			// now you have isNewUser to represent if the user is newly created or not.
-			res.json({ message: "success", isNewUser });
+			res.json({ message: "success", isNewUser, isPro, isAdmin });
 		}
 	} catch (err) {
 		handleError(err, res);

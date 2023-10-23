@@ -34,6 +34,15 @@ const userSchema = new mongoose.Schema({
 	ACCESS_TOKEN: String,
 	ITEM_ID: String,
 	TRANSFER_ID: String,
+	storeAYear: { type: Boolean, default: true },
+	kpis: [{ type: Object }],
+
+	// check payed user
+	isPro: { type: Boolean, default: false },
+	createdAt: {
+		type: Date,
+		default: Date.now,
+	},
 });
 
 module.exports = mongoose.model("User", userSchema);

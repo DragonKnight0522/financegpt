@@ -27,10 +27,6 @@ const createConnection = async (userId, mongoDBURL) => {
 			});
 
 			conn.on("connected", () => {
-				// console.log(
-				// 	"MongoDB Connection Established Successfully!",
-				// 	userId
-				// );
 				const Chat = conn.model("Chat", ChatModel.schema);
 				const Transaction = conn.model(
 					"Transaction",
@@ -40,7 +36,12 @@ const createConnection = async (userId, mongoDBURL) => {
 					"Liability",
 					LiabilityModel.schema
 				);
-				connections[userId] = { conn, Chat, Transaction, Liability };
+				connections[userId] = {
+					conn,
+					Chat,
+					Transaction,
+					Liability,
+				};
 				return resolve(conn.readyState);
 			});
 

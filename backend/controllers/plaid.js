@@ -4,12 +4,16 @@ const {
 	Products,
 	PlaidEnvironments,
 } = require("plaid");
-const { v4: uuidv4 } = require("uuid");
+
 const moment = require("moment");
 const Category = require("../models/category");
 
 const { prettyPrintResponse, handleError, isEmpty } = require("../utils/util");
-const { PLAID_PRODUCTS, PLAID_COUNTRY_CODES } = require("../config/plaid");
+const {
+	DEFAULT_PLAID_PRODUCTS,
+	PLAID_COUNTRY_CODES,
+	PLAID_PRODUCTS_LIST,
+} = require("../config/plaid");
 const User = require("../models/user");
 const Item = require("../models/item");
 const mongoose = require("mongoose");
@@ -79,7 +83,7 @@ exports.info = (req, res, next) => {
 	return res.json({
 		item_id: ITEM_ID,
 		access_token: ACCESS_TOKEN,
-		products: PLAID_PRODUCTS,
+		products: DEFAULT_PLAID_PRODUCTS,
 	});
 };
 
@@ -92,7 +96,7 @@ exports.createLinkToken = async (request, response, next) => {
 				client_user_id: `id-${user.name}`,
 			},
 			client_name: user.name,
-			products: PLAID_PRODUCTS,
+			products: PLAID_PRODUCTS_LIST[0],
 			country_codes: PLAID_COUNTRY_CODES,
 			language: user.locale,
 		};
@@ -104,9 +108,19 @@ exports.createLinkToken = async (request, response, next) => {
 		if (PLAID_ANDROID_PACKAGE_NAME !== "") {
 			configs.android_package_name = PLAID_ANDROID_PACKAGE_NAME;
 		}
-		const createTokenResponse = await client.linkTokenCreate(configs);
+		let linkArray = [];
+		const createTokenResponse1 = await client.linkTokenCreate(configs);
+		linkArray.push(createTokenResponse1.data);
 
-		return response.json(createTokenResponse.data);
+		configs.products = PLAID_PRODUCTS_LIST[1];
+		const createTokenResponse2 = await client.linkTokenCreate(configs);
+		linkArray.push(createTokenResponse2.data);
+
+		configs.products = PLAID_PRODUCTS_LIST[2];
+		const createTokenResponse3 = await client.linkTokenCreate(configs);
+		linkArray.push(createTokenResponse3.data);
+
+		return response.json({ link_token: linkArray });
 	} catch (err) {
 		handleError(err, response);
 	}
@@ -116,7 +130,7 @@ exports.createLinkToken = async (request, response, next) => {
 exports.setAccessToken = async (request, response, next) => {
 	try {
 		const { user } = request;
-		const { public_token: PUBLIC_TOKEN, metadata } = request.body;
+		const { public_token: PUBLIC_TOKEN, metadata, type } = request.body;
 		const { institution_id } = metadata.institution;
 		const accountIds = metadata.accounts.map((item) => item.id);
 
@@ -144,10 +158,11 @@ exports.setAccessToken = async (request, response, next) => {
 			const tokenResponse = await client.itemPublicTokenExchange({
 				public_token: PUBLIC_TOKEN,
 			});
-			// prettyPrintResponse(tokenResponse);
 			// Save it to database
 			const ACCESS_TOKEN = tokenResponse.data.access_token;
 			const ITEM_ID = tokenResponse.data.item_id;
+			const PLAID_PRODUCTS = PLAID_PRODUCTS_LIST[type];
+
 			let TRANSFER_ID = null;
 			if (PLAID_PRODUCTS.includes(Products.Transfer)) {
 				TRANSFER_ID = await authorizeAndCreateTransfer(
@@ -161,6 +176,7 @@ exports.setAccessToken = async (request, response, next) => {
 				ITEM_ID,
 				TRANSFER_ID,
 			});
+
 			const newAccounts = metadata.accounts.map((account) => ({
 				account_id: account.id.toString(),
 				name: account.name,
@@ -168,6 +184,7 @@ exports.setAccessToken = async (request, response, next) => {
 				subtype: account.subtype,
 				type: account.type,
 			}));
+
 			const newItem = new Item({
 				user: new ObjectId(user._id),
 				accounts: newAccounts,
@@ -175,6 +192,7 @@ exports.setAccessToken = async (request, response, next) => {
 				ACCESS_TOKEN,
 				ITEM_ID,
 				TRANSFER_ID,
+				products: PLAID_PRODUCTS,
 			});
 			await newItem.save();
 
@@ -197,6 +215,125 @@ exports.auth = (request, response, next) => {
 		.catch(next);
 };
 
+const updateTransactionByItem = async (item, Transaction, user) => {
+	const creditAccounts = item.accounts
+		.filter((account) => account.type === "credit")
+		.map((creditAccount) => creditAccount.account_id);
+
+	// Update Transactions
+
+	if (
+		!isEmpty(item.products) &&
+		item?.products?.includes(Products.Transactions)
+	) {
+		// Set cursor to empty to receive all historical updates
+		let cursor = isEmpty(item?.cursor) ? null : item.cursor;
+
+		// New transaction updates since "cursor"
+		let added = [];
+		let modified = [];
+
+		// Removed transaction ids
+		let removed = [];
+		let hasMore = true;
+
+		// Iterate through each page of new transaction updates for item
+		while (hasMore) {
+			const request = {
+				access_token: item.ACCESS_TOKEN,
+				cursor: cursor,
+			};
+
+			const res = await client.transactionsSync(request);
+			const data = res.data;
+
+			// Add this page of results
+			added = added.concat(data.added);
+			modified = modified.concat(data.modified);
+			removed = removed.concat(data.removed);
+
+			hasMore = data.has_more;
+
+			// Update cursor to the next cursor
+			cursor = data.next_cursor;
+		}
+
+		// Update cursor for next new transaction
+		item.cursor = cursor;
+		await item.save();
+
+		let addedData = added.map((addedRecord) => {
+			addedRecord.user = user?._id;
+			if (creditAccounts?.includes(addedRecord.account_id))
+				addedRecord.amount = Math.abs(addedRecord.amount);
+			return addedRecord;
+		});
+		await Transaction.insertMany(addedData);
+
+		const updatePromises = modified.map((transaction) => {
+			if (creditAccounts?.includes(transaction.account_id))
+				transaction.amount = Math.abs(transaction.amount);
+			Transaction.findOneAndUpdate(
+				{
+					user: user._id,
+					transaction_id: transaction.transaction_id,
+				},
+				transaction
+			);
+		});
+
+		await Promise.all(updatePromises);
+
+		let removeItemIds = removed.map(
+			(removedRecord) => removedRecord.transaction_id
+		);
+		await Transaction.deleteMany({
+			user: user._id,
+			transaction_id: { $in: removeItemIds },
+		});
+	}
+
+	// Update Transactions from investment Transaction
+	try {
+		if (
+			isEmpty(item.products) ||
+			!item?.products?.includes(Products.Investments)
+		) {
+			return;
+		}
+
+		const startDate = isEmpty(item.endDate)
+			? moment().subtract(2, "years").format("YYYY-MM-DD")
+			: item.endDate;
+		const endDate = moment().format("YYYY-MM-DD");
+		const configs = {
+			access_token: item.ACCESS_TOKEN,
+			start_date: startDate,
+			end_date: endDate,
+		};
+
+		const investmentTransactionsResponse =
+			await client.investmentsTransactionsGet(configs);
+		if (isEmpty(investmentTransactionsResponse.error_code)) {
+			let addedInvestData =
+				investmentTransactionsResponse.data?.investment_transactions?.map(
+					(addedRecord) => {
+						addedRecord.user = user._id;
+						addedRecord.category = [Products.Investments];
+						addedRecord.payment_channel = "invest";
+						return addedRecord;
+					}
+				);
+			await Transaction.insertMany(addedInvestData);
+		}
+
+		item.endDate = endDate;
+		await item.save();
+	} catch (err) {
+		console.log(err.data);
+	}
+};
+
 exports.transactions = async (request, response, next) => {
 	try {
 		const { user } = request;
@@ -206,70 +343,14 @@ exports.transactions = async (request, response, next) => {
 				.status(403)
 				.json({ message: "Personal Database Connection Error" });
 
-		// get
 		const item = await Item.findOne({
 			user: user._id,
 			ACCESS_TOKEN: user.ACCESS_TOKEN,
 		});
 
-		// Set cursor to empty to receive all historical updates
-		let cursor = isEmpty(item?.cursor) ? null : item.cursor;
-		// New transaction updates since "cursor"
-		let added = [];
-		let modified = [];
-		// Removed transaction ids
-		let removed = [];
-		let hasMore = true;
-		// Iterate through each page of new transaction updates for item
-		while (hasMore) {
-			const request = {
-				access_token: user.ACCESS_TOKEN,
-				cursor: cursor,
-			};
-			const res = await client.transactionsSync(request);
-			const data = res.data;
-			// Add this page of results
-			added = added.concat(data.added);
-			modified = modified.concat(data.modified);
-			removed = removed.concat(data.removed);
-			hasMore = data.has_more;
-			// Update cursor to the next cursor
-			cursor = data.next_cursor;
-		}
+		await updateTransactionByItem(item, Transaction, user);
 
-		// Update cursor for next new transaction
-		item.cursor = cursor;
-		await item.save();
-
-		let addedData = added.map((added) => {
-			added.user = user._id;
-			return added;
-		});
-		await Transaction.insertMany(addedData);
-
-		const updatePromises = modified.map((transaction) =>
-			Transaction.findOneAndUpdate(
-				{
-					user: user._id,
-					transaction_id: transaction.transaction_id,
-				},
-				transaction
-			)
-		);
-		await Promise.all(updatePromises);
-
-		let removeItemIds = removed.map((removed) => removed.transaction_id);
-		await Transaction.deleteMany({
-			user: user._id,
-			transaction_id: { $in: removeItemIds },
-		});
-		return response.json({
-			added: added.length,
-			modified: modified.length,
-			removed: removed.length,
-			updated:
-				added.length > 0 || modified.length > 0 || removed.length > 0,
-		});
+		return response.json({ message: "success" });
 	} catch (error) {
 		handleError(error);
 	}
@@ -309,6 +390,7 @@ exports.identity = (request, response, next) => {
 		})
 		.catch(next);
 };
+
 // Retrieve real-time balance information
 exports.balance = (request, response, next) => {
 	Promise.resolve()
@@ -606,4 +688,28 @@ exports.getLiabilitiesByToken = async (ACCESS_TOKEN) => {
 		access_token: ACCESS_TOKEN,
 	});
 	return liabilitiesResponse.data;
+};
+
+exports.transactionsSyncAll = async (request, response, next) => {
+	try {
+		const { user } = request;
+		const { Transaction } = await getConnection(user._id, user.mongoDBURL);
+		if (isEmpty(Transaction))
+			return response
+				.status(403)
+				.json({ message: "Personal Database Connection Error" });
+
+		const items = await Item.find({ user: user._id });
+
+		// Now we map over items and convert them to an array of promises
+		const promises = items.map((item) =>
+			updateTransactionByItem(item, Transaction, user)
+		);
+		// And then we await all these promises to finish
+		await Promise.all(promises);
+
+		return response.json({ message: "success" });
+	} catch (error) {
+		handleError(error);
+	}
 };

@@ -1,13 +1,20 @@
+const { Products } = require("plaid");
+
 exports.PLAID_CLIENT_ID = process.env.PLAID_CLIENT_ID;
 exports.PLAID_SECRET = process.env.PLAID_SECRET;
 exports.PLAID_ENV = process.env.PLAID_ENV || "sandbox";
-
 // PLAID_PRODUCTS is a comma-separated list of products to use when initializing
 // Link. Note that this list must contain 'assets' in order for the app to be
 // able to create and retrieve asset reports.
-exports.PLAID_PRODUCTS = (
+exports.DEFAULT_PLAID_PRODUCTS = (
 	process.env.PLAID_PRODUCTS || Products.Transactions
 ).split(",");
+
+exports.PLAID_PRODUCTS_LIST = [
+	[Products.Transactions],
+	[Products.Transactions, Products.Liabilities],
+	[Products.Investments],
+];
 
 // PLAID_COUNTRY_CODES is a comma-separated list of countries for which users
 // will be able to select institutions from.
@@ -26,4 +33,5 @@ exports.PLAID_REDIRECT_URI = process.env.PLAID_REDIRECT_URI || "";
 
 // Parameter used for OAuth in Android. This should be the package name of your app,
 // e.g. com.plaid.linksample
-exports.PLAID_ANDROID_PACKAGE_NAME = process.env.PLAID_ANDROID_PACKAGE_NAME || "";
+exports.PLAID_ANDROID_PACKAGE_NAME =
+	process.env.PLAID_ANDROID_PACKAGE_NAME || "";

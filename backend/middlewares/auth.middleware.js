@@ -18,7 +18,7 @@ module.exports = async (req, res, next) => {
 
 		if (user) {
 			req.user = user;
-			console.log(req.user?.email);
+			// console.log(req.user?.email);
 			next();
 		} else {
 			console.log("User Not Found");
